@@ -40,5 +40,8 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 400, height: 400) do
     end
     record = button "Record"
     exit = button "Quit"
+    exit.click do
+        exit()
+    end
   end
 end
