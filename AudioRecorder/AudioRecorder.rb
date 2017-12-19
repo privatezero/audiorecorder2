@@ -10,8 +10,15 @@ FILTER_CHAIN = "asplit=6[out1][a][b][c][d][e],\
 [dd]drawbox=0:0:700:42:hotpink@0.2:t=42[ddd],\
 [aa][bb]vstack[aabb],[aabb][cc]hstack[aabbcc],[aabbcc][ddd]vstack[aabbccdd],[e1][aabbccdd]vstack[out0]"
 
-Soxcommand = 'sox -d -r 48k -b 32 -L -e signed-integer --buffer 5000 -p'
-FFmpegcommand = 'ffmpeg -i - -f wav -c:a ' + codec_choice + ' -ar ' + sample_rate_choice + ' -'
+sample_rate_choice = '96000'
+sox_channels = '1 2'
+ffmpeg_channels = 'stereo'
+codec_choice = 'pcm_s24le'
+soxbuffer = '50000'
+
+Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
+FFmpegcommand = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - -f wav -c:a ' + codec_choice + ' -ar ' + sample_rate_choice + ' -'
+Preview_FFmpegcommand = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - -f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
 FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"'
 
 # GUI App
@@ -28,9 +35,10 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 400, height: 400) do
   stack margin: 10 do
     preview = button "Preview"
     preview.click do 
-      command = Soxcommand + ' | ' + FFmpegcommand + ' | ' + FFplaycommand 
+      command = Soxcommand + ' | ' + Preview_FFmpegcommand + ' | ' + FFplaycommand 
       system(command)
     end
     record = button "Record"
+    exit = button "Quit"
   end
 end
