@@ -1,3 +1,4 @@
+# Recording Variables
 FILTER_CHAIN = "asplit=6[out1][a][b][c][d][e],\
 [e]showvolume=w=700:c=0xff0000:r=30[e1],\
 [a]showfreqs=mode=bar:cmode=separate:size=300x300:colors=magenta|yellow[a1],\
@@ -10,8 +11,10 @@ FILTER_CHAIN = "asplit=6[out1][a][b][c][d][e],\
 [aa][bb]vstack[aabb],[aabb][cc]hstack[aabbcc],[aabbcc][ddd]vstack[aabbccdd],[e1][aabbccdd]vstack[out0]"
 
 Soxcommand = 'sox -d -r 48k -b 32 -L -e signed-integer --buffer 5000 -p'
-FFmpegcommand = 'ffmpeg -i - -f wav -c:a pcm_s16le -ar 44100 -'
+FFmpegcommand = 'ffmpeg -i - -f wav -c:a ' + codec_choice + ' -ar ' + sample_rate_choice + ' -'
 FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"'
+
+# GUI App
 Shoes.app(title: "Welcome to AudioRecorder", width: 400, height: 400) do
   stack margin: 10 do
     button "Edit Settings" do
@@ -28,5 +31,6 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 400, height: 400) do
       command = Soxcommand + ' | ' + FFmpegcommand + ' | ' + FFplaycommand 
       system(command)
     end
+    record = button "Record"
   end
 end
