@@ -23,6 +23,9 @@ FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
 FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
 FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
 FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"'
+if RUBY_PLATFORM.include?('linux')
+  Drawfontpath = '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'
+end
 
 # GUI App
 Shoes.app(title: "Welcome to AudioRecorder", width: 400, height: 400) do
