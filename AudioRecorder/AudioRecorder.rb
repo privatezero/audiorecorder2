@@ -28,7 +28,7 @@ if RUBY_PLATFORM.include?('linux')
 end
 
 # GUI App
-Shoes.app(title: "Welcome to AudioRecorder", width: 400, height: 400) do
+Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 400) do
   style Shoes::Para, font: "Courier New"
   background cyan .. deepskyblue
   stack margin: 10 do
