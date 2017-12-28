@@ -12,17 +12,12 @@ FILTER_CHAIN = "asplit=6[out1][a][b][c][d][e],\
 [dd]drawbox=0:0:700:42:hotpink@0.2:t=42[ddd],\
 [aa][bb]vstack[aabb],[aabb][cc]hstack[aabbcc],[aabbcc][ddd]vstack[aabbccdd],[e1][aabbccdd]vstack[out0]"
 
-sample_rate_choice = '96000'
 sox_channels = '1 2'
 ffmpeg_channels = 'stereo'
 codec_choice = 'pcm_s24le'
 soxbuffer = '50000'
+sample_rate_choice = '96000'
 
-Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
-FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
-FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
-FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
-FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"'
 if RUBY_PLATFORM.include?('linux')
   Drawfontpath = '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'
 end
@@ -41,9 +36,53 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 400) do
     end
   end
 
+  # stack margin:10 do
+  #   para "Select Channel(s)"
+  #   channels = list_box items: ["1", "2", "1 2"],
+  #   choose: "1 2" do |list|
+  #     sox_channels = list.text
+  #     if sox_channels = "1 2"
+  #       ffmpeg_channels = 'stereo'
+  #     else
+  #       ffmpeg_channels = 'mono'
+  #     end
+  #     Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
+  #     FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
+  #     FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
+  #     FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
+  #     FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
+  #   end
+  # end
+
+  stack margin: 10 do
+    para "Sample Rate"
+    samplerate = list_box items: ["44100", "48000", "96000"],
+    choose: "96000" do |list|
+      sample_rate_choice = list.text
+      Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
+      FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
+      FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
+      FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
+      FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
+    end
+  end
+
+    stack margin: 10 do
+    para "Codec"
+    samplerate = list_box items: ["pcm_s16le", "pcm_s24le"],
+    choose: "pcm_s24le" do |list|
+      codec_choice = list.text
+      Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
+      FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
+      FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
+      FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
+      FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
+    end
+  end
+
   stack margin: 10 do
     preview = button "Preview"
-    preview.click do 
+    preview.click do
       ffmpegcommand = FFmpegSTART + FFmpegPreview
       command = Soxcommand + ' | ' + ffmpegcommand + ' | ' + FFplaycommand
       system(command)
