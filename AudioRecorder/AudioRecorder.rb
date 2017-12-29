@@ -36,23 +36,18 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
     end
   end
 
-  # stack margin:10 do
-  #   para "Select Channel(s)"
-  #   channels = list_box items: ["1", "2", "1 2"],
-  #   choose: "1 2" do |list|
-  #     sox_channels = list.text
-  #     if sox_channels = "1 2"
-  #       ffmpeg_channels = 'stereo'
-  #     else
-  #       ffmpeg_channels = 'mono'
-  #     end
-  #     Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
-  #     FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
-  #     FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
-  #     FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
-  #     FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
-  #   end
-  # end
+  stack margin:10 do
+    para "Select Channel(s)"
+    channels = list_box items: ["1", "2", "1 2"],
+    choose: "1 2" do |list|
+      sox_channels = list.text
+      if sox_channels == "1 2"
+        ffmpeg_channels = 'stereo'
+      else
+        ffmpeg_channels = 'mono'
+      end
+    end
+  end
 
   stack margin: 10 do
     para "Sample Rate"
