@@ -28,13 +28,21 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
   background cyan .. deepskyblue
   stack margin: 10 do
     para "Welcome To Audiorecorder2"
-    button "Edit Settings" do
+    button "Edit BWF Metadata" do
       window(title: "A new window") do
         para "Please Make Selections"
-        list_box items: ["44.1 kHz", "48 kHz", "96 kHz"]
       end
     end
   end
+
+  stack margin:10 do
+    @destination = para "File will be saved to:"
+    button "Choose Output Directory" do
+      @outputdir = ask_save_folder
+      @destination.replace "File will be saved to: #{@outputdir}"
+    end
+  end
+
 
   stack margin:10 do
     para "Select Channel(s)"
@@ -79,9 +87,10 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
     record = button "Record"
     record.click do
       filename = ask("Please Enter File Name")
+      @fileoutput = '"' + @outputdir + '/' + filename + '"'
       Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
       FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
-      FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/' + filename
+      FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ' + @fileoutput
       FFmpegPreview = ' -f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
       FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
       ffmpegcommand = FFmpegSTART + FFmpegRECORD + FFmpegPreview
