@@ -22,6 +22,13 @@ if RUBY_PLATFORM.include?('linux')
   Drawfontpath = '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'
 end
 
+configuration_file = File.expand_path('~/.audiorecorder2.conf')
+if ! File.exist?(configuration_file)
+  config_options = "destination:\nsamplerate:\nchannels:\ncodec:"
+  File.write(configuration_file, config_options)
+end
+config = YAML::load_file(configuration_file)
+
 # GUI App
 Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
   style Shoes::Para, font: "Courier New"
@@ -38,8 +45,18 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
   stack margin:10 do
     @destination = para "File will be saved to:"
     button "Choose Output Directory" do
-      @outputdir = ask_save_folder
+      @outputdir = ask_open_folder
       @destination.replace "File will be saved to: #{@outputdir}"
+    end
+  end
+
+  stack margin:10 do
+    button "Save Settings" do
+      config['destination'] = @outputdir
+      config['samplerate'] = sample_rate_choice
+      config['channels'] = sox_channels
+      config['codec'] = codec_choice
+      File.open(configuration_file, 'w') {|f| f.write config.to_yaml }
     end
   end
 
