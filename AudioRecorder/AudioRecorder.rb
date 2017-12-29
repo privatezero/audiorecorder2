@@ -23,7 +23,7 @@ if RUBY_PLATFORM.include?('linux')
 end
 
 # GUI App
-Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 400) do
+Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
   style Shoes::Para, font: "Courier New"
   background cyan .. deepskyblue
   stack margin: 10 do
@@ -59,11 +59,6 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 400) do
     samplerate = list_box items: ["44100", "48000", "96000"],
     choose: "96000" do |list|
       sample_rate_choice = list.text
-      Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
-      FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
-      FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
-      FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
-      FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
     end
   end
 
@@ -72,23 +67,28 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 400) do
     samplerate = list_box items: ["pcm_s16le", "pcm_s24le"],
     choose: "pcm_s24le" do |list|
       codec_choice = list.text
-      Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
-      FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
-      FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/AUDIORECORDERTEMP.wav '
-      FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
-      FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
     end
   end
 
   stack margin: 10 do
     preview = button "Preview"
     preview.click do
+      Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
+      FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
+      FFmpegPreview = '-f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
+      FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
       ffmpegcommand = FFmpegSTART + FFmpegPreview
       command = Soxcommand + ' | ' + ffmpegcommand + ' | ' + FFplaycommand
       system(command)
     end
     record = button "Record"
     record.click do
+      filename = ask("Please Enter File Name")
+      Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
+      FFmpegSTART = 'ffmpeg -channel_layout ' + ffmpeg_channels + ' -i - '
+      FFmpegRECORD = '-f wav -c:a ' + codec_choice  + ' -ar ' + sample_rate_choice + ' -metadata comment="" -y -rf64 auto ~/Desktop/' + filename
+      FFmpegPreview = ' -f wav -c:a ' + 'pcm_s16le' + ' -ar ' + '44100' + ' -'
+      FFplaycommand = 'ffplay -window_title "AudioRecorder" -f lavfi ' + '"' + 'amovie=\'pipe\:0\'' + ',' + FILTER_CHAIN + '"' 
       ffmpegcommand = FFmpegSTART + FFmpegRECORD + FFmpegPreview
       command = Soxcommand + ' | ' + ffmpegcommand + ' | ' + FFplaycommand
       system(command)
