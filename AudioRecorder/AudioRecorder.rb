@@ -123,4 +123,17 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
         exit()
     end
   end
+
+  stack margin:10 do
+    background dimgray
+    button "Choose Output Directory" do
+      outputdir = ask_open_folder
+      @destination.replace "File will be saved to: #{outputdir}"
+    end
+  end
+  stack do
+    @destination = para "File will be saved to: #{outputdir}"
+  end
 end
+
+#Cascadia Now!
