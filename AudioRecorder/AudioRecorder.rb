@@ -38,11 +38,12 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
   style Shoes::Para, font: "Helvetica"
   background aliceblue
   stack margin: 10 do
-    para "Welcome To Audiorecorder2"
-    button "Edit BWF Metadata" do
-      window(title: "A new window") do
-        para "Please Make Selections"
-      end
+    para "Welcome To Audiorecorder2" , align: "center"
+    image "Resources/audiorecorder_small.png"
+  end
+  button "Edit BWF Metadata" do
+    window(title: "A new window") do
+      para "Please Make Selections"
     end
   end
 
@@ -82,6 +83,17 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
     end
   end
 
+  stack margin:10 do
+    button "Choose Output Directory" do
+      outputdir = ask_open_folder
+      @destination.replace "#{outputdir}"
+    end
+  end
+  flow do
+    destination_prompt = para "File will be saved to:"
+    @destination = para "#{outputdir}", underline: "single" 
+  end
+
   flow do
     preview = button "Preview"
     preview.click do
@@ -110,17 +122,6 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
     exit.click do
         exit()
     end
-  end
-
-  stack margin:10 do
-    button "Choose Output Directory" do
-      outputdir = ask_open_folder
-      @destination.replace "#{outputdir}"
-    end
-  end
-  flow do
-    destination_prompt = para "File will be saved to:"
-    @destination = para "#{outputdir}", underline: "single" 
   end
 end
 
