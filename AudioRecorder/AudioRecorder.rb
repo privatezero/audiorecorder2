@@ -113,14 +113,14 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
   end
 
   stack margin:10 do
-    background dimgray
     button "Choose Output Directory" do
       outputdir = ask_open_folder
-      @destination.replace "File will be saved to: #{outputdir}"
+      @destination.replace "#{outputdir}"
     end
   end
-  stack do
-    @destination = para "File will be saved to: #{outputdir}"
+  flow do
+    destination_prompt = para "File will be saved to:"
+    @destination = para "#{outputdir}", underline: "single" 
   end
 end
 
