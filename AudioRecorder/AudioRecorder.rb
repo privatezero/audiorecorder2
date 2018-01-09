@@ -35,22 +35,14 @@ codec_choice = config['codec']
 
 # GUI App
 Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
-  style Shoes::Para, font: "Courier New"
-  background cyan .. deepskyblue
+  style Shoes::Para, font: "Helvetica"
+  background aliceblue
   stack margin: 10 do
     para "Welcome To Audiorecorder2"
     button "Edit BWF Metadata" do
       window(title: "A new window") do
         para "Please Make Selections"
       end
-    end
-  end
-
-  stack margin:10 do
-    @destination = para "File will be saved to: #{outputdir}"
-    button "Choose Output Directory" do
-      outputdir = ask_open_folder
-      @destination.replace "File will be saved to: #{outputdir}"
     end
   end
 
@@ -68,7 +60,7 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
   stack margin:10 do
     para "Select Channel(s)"
     channels = list_box items: ["1", "2", "1 2"],
-    choose: sox_channels do |list|
+    width: 100, choose: sox_channels do |list|
       sox_channels = list.text
       if sox_channels == "1 2"
         ffmpeg_channels = 'stereo'
@@ -76,25 +68,21 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
         ffmpeg_channels = 'mono'
       end
     end
-  end
 
-  stack margin: 10 do
     para "Sample Rate"
     samplerate = list_box items: ["44100", "48000", "96000"],
-    choose: sample_rate_choice do |list|
+    width: 100, choose: sample_rate_choice do |list|
       sample_rate_choice = list.text
     end
-  end
 
-    stack margin: 10 do
     para "Codec"
     samplerate = list_box items: ["pcm_s16le", "pcm_s24le"],
-    choose: codec_choice do |list|
+    width: 100, choose: codec_choice do |list|
       codec_choice = list.text
     end
   end
 
-  stack margin: 10 do
+  flow do
     preview = button "Preview"
     preview.click do
       Soxcommand = 'rec -r ' + sample_rate_choice + ' -b 32 -L -e signed-integer --buffer ' + soxbuffer + ' -p remix ' + sox_channels
