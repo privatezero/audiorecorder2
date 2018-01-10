@@ -34,12 +34,10 @@ sox_channels = config['channels']
 codec_choice = config['codec']
 
 # GUI App
-Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
+Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 500) do
   style Shoes::Para, font: "Helvetica"
   background aliceblue
-  stack margin: 10 do
-    image "Resources/audiorecorder_small.png"
-  end
+  @logo = image("Resources/audiorecorder_small.png", left: 160)
 
   flow margin: 10 do
     para "Select Channel(s)"
@@ -102,7 +100,7 @@ Shoes.app(title: "Welcome to AudioRecorder", width: 600, height: 800) do
       command = Soxcommand + ' | ' + ffmpegcommand + ' | ' + FFplaycommand
       system(command)
     end
-    
+
     button "Edit BWF Metadata" do
       window(title: "A new window") do
         para "Please Make Selections"
