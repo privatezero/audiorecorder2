@@ -1,3 +1,5 @@
+# Development of this project has been moved over to the main audiorecorder repository at [AMIA Open Source](https://github.com/amiaopensource/audiorecorder)
+
 # audiorecorder2
 
 ## initial sandbox for audiorecorder2 GUI build using Shoes
